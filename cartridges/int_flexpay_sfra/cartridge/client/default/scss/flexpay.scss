@@ -1,0 +1,941 @@
+// =============================================================================
+// Payment Method Selector - Bootstrap Tabs Styled as Radio Button Cards
+// IMPORTANT: Scoped to .payment-form to avoid affecting FlexPay modal elements
+// =============================================================================
+
+// Breakpoint variable for responsive styles
+$flexpay-mobile-breakpoint: 767px;
+
+// Target Bootstrap tabs list and convert to vertical stacked cards
+// Scoped to payment form context only
+.payment-form {
+    [role="tablist"],
+    .nav-tabs {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px;
+        margin-bottom: 24px;
+        border-bottom: none !important; // Remove Bootstrap tab bottom border
+        list-style: none;
+        padding: 0;
+    }
+
+    // Target individual tab items (li elements)
+    [role="tablist"] > li,
+    .nav-tabs > li {
+        position: relative;
+        border: 2px solid #d1d5db;
+        border-radius: 8px;
+        background-color: #fff;
+        transition: all 0.3s ease;
+        margin: 0 !important;
+
+        &:hover {
+            border-color: #9ca3af;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    // Target tab buttons/links and style as card content
+    [role="tab"],
+    .nav-link {
+        display: flex !important;
+        align-items: center;
+        padding: 16px 16px 16px 52px !important; // Extra left padding for radio button
+        border: none !important;
+        background: transparent !important;
+        color: inherit !important;
+        cursor: pointer;
+        position: relative;
+        width: 100%;
+        text-align: left;
+        border-radius: 8px !important;
+
+        // Custom radio button - outer circle
+        &::before {
+            content: '';
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            border: 2px solid #d1d5db;
+            border-radius: 50%;
+            background-color: #fff;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        // Custom radio button - inner filled circle
+        &::after {
+            content: '';
+            position: absolute;
+            left: 22px; // Centered within ::before circle
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+            z-index: 2;
+        }
+    }
+
+    // Selected/Active tab state (Bootstrap sets aria-selected="true")
+    [role="tab"][aria-selected="true"],
+    .nav-link.active {
+        // Blue border and light blue background for parent li
+        &::before {
+            border-color: #007bff !important;
+        }
+
+        &::after {
+            background-color: #007bff !important;
+        }
+    }
+
+    // Apply selected state styling to parent li when tab is active
+    [role="tablist"] > li:has([aria-selected="true"]),
+    .nav-tabs > li:has(.nav-link.active) {
+        border-color: #007bff !important;
+        background-color: #f0f9ff;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    // =============================================================================
+    // Credit Card Tab - Hide Text, Show Only Icon
+    // =============================================================================
+
+    // Target first tab (Credit Card) - hide text but keep icon
+    [role="tablist"] > li:first-child [role="tab"],
+    .nav-tabs > li:first-child .nav-link {
+        font-size: 0 !important; // Collapse text
+
+        // Reset font-size for child elements (icon, images)
+        * {
+            font-size: 16px;
+        }
+
+        img {
+            display: inline-block;
+            height: 32px;
+            width: auto;
+        }
+    }
+
+    // =============================================================================
+    // FlexPay Tab - Inline Offer Display
+    // =============================================================================
+
+    // Target second tab (FlexPay) - ensure offer displays inline
+    [role="tablist"] > li:last-child [role="tab"],
+    .nav-tabs > li:last-child .nav-link {
+        padding: 16px 16px 16px 52px !important;
+
+        // Ensure FlexPay offer content displays inline
+        > * {
+            display: inline;
+            vertical-align: middle;
+        }
+    }
+}
+
+// FlexPay Offer Widget Styles - Matching FlexPay's Design
+.flexpay-offer-widget {
+    margin: 15px 0;
+    padding: 12px 16px;
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+        border-color: #00a86b;
+    }
+
+    // Loading state
+    .flexpay-offer-loading {
+        .flexpay-loading-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #6b7280;
+            font-size: 14px;
+
+            .spinner-border {
+                width: 1rem;
+                height: 1rem;
+                border-width: 0.15em;
+                border-color: #00a86b;
+                border-right-color: transparent;
+            }
+
+            .flexpay-loading-text {
+                color: #6b7280;
+            }
+        }
+    }
+
+    // Main offer content - inline layout matching FlexPay design
+    .flexpay-offer-content {
+        .flexpay-offer-selector {
+            .flexpay-selector-main {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-wrap: wrap;
+                font-size: 15px;
+                line-height: 1.5;
+
+                // "Pay Monthly from" text
+                .flexpay-text-prefix {
+                    color: #374151;
+                    font-weight: 400;
+                    font-size: 16px;
+                }
+
+                // Monthly amount - GREEN highlight (matching FlexPay brand)
+                .flexpay-amount-highlight {
+                    color: #00a86b;
+                    font-weight: 600;
+                    font-size: 16px;
+                }
+
+                // Info icon button - filled green circle
+                .flexpay-info-icon {
+                    background: none;
+                    border: none;
+                    padding: 0;
+                    margin: 0 2px;
+                    cursor: pointer;
+                    display: inline-flex;
+                    align-items: center;
+                    opacity: 1;
+                    transition: opacity 0.2s ease;
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+
+                    &:focus {
+                        outline: none;
+                        opacity: 0.9;
+                    }
+
+                    svg {
+                        width: 18px;
+                        height: 18px;
+                    }
+                }
+
+                // "with" text
+                .flexpay-text-with {
+                    color: #6b7280;
+                    font-weight: 400;
+                    font-size: 16px;
+                }
+
+                // FlexPay brand/logo
+                .flexpay-brand {
+                    display: inline-flex;
+                    align-items: center;
+
+                    .flexpay-logo {
+                        height: 20px;
+                        width: auto;
+                    }
+                }
+            }
+
+            // Additional details (shown on info click)
+            .flexpay-offer-details {
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px solid #e5e7eb;
+
+                .flexpay-details-text {
+                    margin: 0 0 6px;
+                    font-size: 13px;
+                    color: #6b7280;
+                }
+
+                .flexpay-disclaimer {
+                    font-size: 11px;
+                    color: #9ca3af;
+                    margin: 0;
+                    line-height: 1.4;
+                }
+            }
+        }
+    }
+
+    // Error state
+    .flexpay-offer-error {
+        .flexpay-error-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .flexpay-icon-info {
+                color: #f59e0b;
+                flex-shrink: 0;
+            }
+
+            .flexpay-error-message {
+                color: #6b7280;
+                font-size: 13px;
+                margin: 0;
+            }
+        }
+    }
+
+    // Context-specific styles - PDP (Product Detail Page)
+    &.flexpay-offer-pdp {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        margin: 15px 0;
+
+        .flexpay-offer-content {
+            .flexpay-selector-main {
+                justify-content: center;
+            }
+        }
+    }
+
+    // Offer widget when displayed inline in payment selector
+    &.flexpay-offer-inline {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+
+        .flexpay-offer-widget {
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        .flexpay-selector-main {
+            font-size: 15px;
+        }
+    }
+}
+
+// =============================================================================
+// FlexPay Info Modal Styles
+// =============================================================================
+
+.flexpay-info-modal {
+    // Force modal to break out of any parent container
+    &.modal {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: 100vw !important;
+        display: none; // Bootstrap toggles to 'block' on show
+        z-index: 1050 !important;
+        overflow-x: hidden;
+        overflow-y: auto;
+        outline: 0;
+    }
+
+    // Modal dialog - centered with viewport units
+    .modal-dialog {
+        position: relative;
+        max-width: 548px !important;
+        width: 548px !important;
+        min-width: 548px !important;
+        margin: 1.75rem auto;
+
+        // Use viewport dimensions for centering
+        min-height: calc(100vh - 3.5rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    // Modal content container
+    .modal-content {
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 7px 20px 0 rgba(58, 59, 65, 0.2);
+        overflow: hidden;
+        // Force full width in flexbox container
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    // Modal Header
+    .flexpay-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        background-color: #fefefe;
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+        min-height: 81px;
+
+        // Header spacer (left side, shown by default in info view)
+        .flexpay-modal-header-spacer {
+            width: 32px; // Same width as close button for balance
+        }
+
+        // FlexPay Logo (Center)
+        .flexpay-modal-logo {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            img {
+                height: 32px;
+                width: auto;
+            }
+        }
+
+        // Close Button (Right)
+        .flexpay-modal-close {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            opacity: 1;
+            transition: opacity 0.2s ease;
+
+            &:hover {
+                opacity: 0.7;
+            }
+
+            &:focus {
+                outline: none;
+            }
+
+            span {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+
+    // Modal Body
+    .flexpay-modal-body {
+        padding: 0 32px 32px;
+        background-color: #fff;
+    }
+
+    // Modal Title - Smaller font to match reference design
+    .flexpay-modal-title {
+        font-family: 'Graphik', sans-serif;
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 32px;
+        color: #3a3b41;
+        margin: 0 0 16px;
+        text-align: left;
+
+        .flexpay-modal-monthly-payment {
+            color: #0e680e;
+            font-weight: 600;
+        }
+
+        // Style bold text (monthly payment) as green when from API
+        strong {
+            color: #0e680e;
+            font-weight: 600;
+        }
+    }
+
+    // Modal Subtitle
+    .flexpay-modal-subtitle {
+        font-family: 'Graphik', sans-serif;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        color: #686c78;
+        margin: 0 0 24px;
+        text-align: left;
+    }
+
+    // 3-Step Process Container - Timeline Design
+    .flexpay-modal-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-bottom: 24px;
+        width: 100%;
+        position: relative;
+        padding-left: 28px; // Space for timeline line
+    }
+
+    // Individual Step
+    .flexpay-modal-step {
+        display: flex;
+        align-items: flex-start;
+        position: relative;
+        width: 100%;
+
+        // Vertical green timeline line connecting icons
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 28px; // Start from center of icon
+            bottom: -24px; // Extend to next step
+            width: 4px;
+            background-color: #0e680e;
+            transform: translateX(-50%);
+            margin-left: 0;
+        }
+
+        // Hide line on last step
+        &:last-child::before {
+            display: none;
+        }
+    }
+
+    // Step Icon (Circular Green Background)
+    .flexpay-modal-step-icon {
+        background-color: #0e680e;
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-left: -28px; // Position over timeline line
+        margin-right: 0;
+        z-index: 2;
+        position: relative;
+
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    // Step Text (Green Background Pill)
+    .flexpay-modal-step-text {
+        background-color: #e8f5e6;
+        border-radius: 0 24px 24px 0;
+        padding: 16px 16px 16px 20px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        min-height: 56px;
+        z-index: 1;
+        position: relative;
+        margin-left: -12px; // Overlap with icon
+
+        span {
+            font-family: 'Graphik', sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 24px;
+            color: #3a3b41;
+
+            strong {
+                font-weight: 600;
+            }
+        }
+    }
+
+    // Connector Line Between Steps (vertical green line segment)
+    .flexpay-modal-connector {
+        width: 100%;
+        height: 24px;
+        position: relative;
+        padding-left: 0;
+
+        // Vertical green line
+        &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            transform: translateX(-50%);
+            background-color: #0e680e;
+        }
+    }
+
+    // Divider
+    .flexpay-modal-divider {
+        height: 2px;
+        background-color: #cfd1d8;
+        margin: 0 0 24px;
+        width: 100%;
+    }
+
+    // FAQ Button Container (at very bottom of info view, after disclosure)
+    .flexpay-modal-faq-button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 24px;
+        margin-bottom: 0;
+    }
+
+    // FAQ Button (simple text link style, matching Kingston Brass reference)
+    .flexpay-modal-faq-btn {
+        font-family: 'Graphik', sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 20px;
+        color: #0e680e;
+        background-color: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 8px 16px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: #0a500a;
+            background-color: transparent;
+        }
+
+        &:focus {
+            outline: none;
+            color: #0a500a;
+        }
+    }
+
+    // Disclosure Section
+    .flexpay-modal-disclosure {
+        width: 100%;
+        display: block;
+
+        .flexpay-modal-disclosure-text {
+            font-family: 'Graphik', sans-serif;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 16px;
+            color: #686c78;
+            margin: 0 0 12px;
+            text-align: left;
+            display: block;
+            width: 100%;
+
+            a {
+                color: #1f63d2;
+                text-decoration: underline;
+                transition: color 0.2s ease;
+
+                &:hover {
+                    color: #164a9c;
+                }
+            }
+        }
+
+        // Note: Disclosure links are now inline within .flexpay-modal-disclosure-text
+        // The a styling above handles the inline links (Lending Partners. Privacy Policy. Terms of Use.)
+    }
+
+    // Override for nav-item containment specifically
+    &.nav-item & {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+    }
+
+    // Back Button (just arrow, shown in FAQ view)
+    .flexpay-modal-back-btn {
+        padding: 0;
+        background: none;
+        border: none;
+        font-size: 24px;
+        font-weight: 400;
+        color: #3a3b41;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: #0e680e;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    // FAQ View
+    .flexpay-modal-faq-view {
+        padding: 24px 0;
+    }
+
+    .flexpay-faq-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #3a3b41;
+    }
+
+    // FAQ Tabs - Uppercase with underline indicator
+    .flexpay-faq-tabs {
+        display: flex;
+        gap: 0;
+        margin-bottom: 24px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .flexpay-faq-tab {
+        padding: 12px 24px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        font-family: 'Graphik', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: -1px; // Overlap border-bottom
+
+        &.active {
+            color: #0e680e;
+            border-bottom-color: #0e680e;
+        }
+
+        &:hover {
+            color: #0e680e;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    // FAQ Accordion
+    .flexpay-faq-accordion {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-height: 400px; // Prevent modal jumping when switching tabs
+    }
+
+    .flexpay-faq-item {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .flexpay-faq-question {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        background: #fff;
+        border: none;
+        font-size: 16px;
+        font-weight: 500;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.2s;
+
+        &:hover {
+            background-color: #f9fafb;
+        }
+
+        &:focus {
+            outline: none;
+            background-color: #f9fafb;
+        }
+
+        svg {
+            flex-shrink: 0;
+            transition: transform 0.3s;
+            color: #6b7280;
+        }
+    }
+
+    .flexpay-faq-item.active .flexpay-faq-question svg {
+        transform: rotate(180deg);
+    }
+
+    .flexpay-faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+
+        p {
+            padding: 0 20px 16px;
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #6b7280;
+        }
+    }
+
+    .flexpay-faq-item.active .flexpay-faq-answer {
+        max-height: 500px;
+    }
+
+    // Responsive adjustments for mobile
+    @media (max-width: $flexpay-mobile-breakpoint) {
+        .modal-dialog {
+            margin: 0.5rem !important;
+            max-width: calc(100% - 1rem) !important;
+            width: calc(100% - 1rem) !important;
+            min-width: auto !important;
+        }
+
+        .flexpay-modal-body {
+            padding: 0 24px 24px;
+        }
+
+        .flexpay-modal-title {
+            font-size: 20px;
+            line-height: 28px;
+        }
+
+        .flexpay-modal-subtitle {
+            font-size: 14px;
+            line-height: 20px;
+        }
+
+        .flexpay-modal-step-icon {
+            width: 48px;
+            height: 48px;
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        .flexpay-modal-step-text {
+            min-height: 48px;
+            padding: 12px 8px 12px 40px;
+            font-size: 13px;
+        }
+
+        .flexpay-modal-header {
+            padding: 12px 16px;
+            min-height: auto;
+
+            .flexpay-modal-logo img {
+                height: 24px;
+            }
+
+            .flexpay-modal-faq-link {
+                font-size: 14px;
+            }
+        }
+
+        .flexpay-faq-title {
+            font-size: 20px;
+        }
+
+        .flexpay-faq-tabs {
+            gap: 0;
+        }
+
+        .flexpay-faq-tab {
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+
+        .flexpay-modal-faq-btn {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .flexpay-modal-steps {
+            padding-left: 24px;
+        }
+
+        // Note: .flexpay-modal-disclosure-links removed - links are now inline in disclosure text
+
+        .flexpay-faq-question {
+            padding: 14px 16px;
+            font-size: 15px;
+        }
+    }
+}
+
+// =============================================================================
+// FlexPay Offer in Checkout Order Summary
+// =============================================================================
+
+.order-total-summary {
+    .flexpay-offer-checkout-summary {
+        margin-top: 16px;
+        border-top: 1px solid #e5e7eb;
+
+        // Remove widget border and background for clean summary integration
+        background-color: transparent;
+        border: none;
+        padding: 16px 0 0;
+
+        .flexpay-offer-content {
+            .flexpay-selector-main {
+                justify-content: center; // Center the offer text in summary
+                font-size: 15px; // Readable size for summary context
+                gap: 5px; // Comfortable spacing
+
+                .flexpay-text-prefix,
+                .flexpay-text-with {
+                    font-size: 16px;
+                }
+
+                .flexpay-amount-highlight {
+                    font-size: 16px; // Consistent with payment tab
+                    font-weight: 600;
+                }
+
+                .flexpay-info-icon {
+                    svg {
+                        width: 18px;
+                        height: 18px;
+                    }
+                }
+
+                .flexpay-logo {
+                    height: 20px;
+                }
+            }
+        }
+
+        .flexpay-offer-loading {
+            .flexpay-loading-content {
+                justify-content: center;
+                font-size: 13px;
+
+                .spinner-border {
+                    width: 0.9rem;
+                    height: 0.9rem;
+                }
+            }
+        }
+    }
+}
+
+// Modal backdrop - must be top-level because Bootstrap 4 inserts .modal-backdrop
+// as a direct child of <body>, not inside the modal element
+.flexpay-info-modal ~ .modal-backdrop,
+body > .modal-backdrop {
+    background-color: #353535;
+    opacity: 0.7;
+}

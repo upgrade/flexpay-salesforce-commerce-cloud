@@ -1,0 +1,16 @@
+<div class="tab-pane flexpay-content <isif condition="${paymentOption.ID === pdict.selectedPaymentMethod}">active</isif>" id="flexpay-content" role="tabpanel">
+	<fieldset class="payment-form-fields" >
+		<input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}" value="FLEXPAY" />
+	</fieldset>
+
+	<iscomment>
+		Widget now displayed in payment method selector (flexPayMethodTab.isml)
+		Keep CSRF data div for order placement
+	</iscomment>
+
+	<div id="flexpay-data"
+		data-placeorder-url='<isprint value="${dw.web.URLUtils.https("FlexpayOrder-Create")}" encoding="htmlsinglequote" />'
+		data-csrfname='<isprint value="${dw.web.CSRFProtection.getTokenName()}" encoding="htmlsinglequote" />'
+		data-csrftoken='<isprint value="${dw.web.CSRFProtection.generateToken()}" encoding="htmlsinglequote" />'>
+	</div>
+</div>

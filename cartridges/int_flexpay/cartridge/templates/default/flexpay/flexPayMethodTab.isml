@@ -1,0 +1,37 @@
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addCss('/css/flexpay.css');
+
+    var flexpayConfig = require('*/cartridge/scripts/flexpayConfig');
+    var currentBasket = require('dw/order/BasketMgr').getCurrentBasket();
+    var basketTotal = currentBasket && currentBasket.totalGrossPrice ? currentBasket.totalGrossPrice.value : 0;
+    var showOfferInTab = flexpayConfig.isMarketingOfferEnabled() 
+                      && basketTotal >= flexpayConfig.getMarketingOfferMinAmount();
+</isscript>
+
+<li class="nav-item" data-method-id="${paymentOption.ID}">
+    <a class="nav-link flexpay-tab <isif condition="${paymentOption.ID === pdict.selectedPaymentMethod}">active</isif>"
+       data-toggle="tab"
+       href="#flexpay-content"
+       role="tab">
+        <isif condition="${showOfferInTab}">
+            <iscomment>Show offer widget when offers are enabled and eligible</iscomment>
+            <isset name="offerAmount" value="${currentBasket.totalGrossPrice.value}" scope="page" />
+            <isset name="offerCurrency" value="${currentBasket.getCurrencyCode()}" scope="page" />
+            <isset name="offerContext" value="payment-selector" scope="page" />
+            <isset name="offerCssClass" value="flexpay-offer-inline" scope="page" />
+            <isinclude template="flexpay/flexpayOfferWidget" />
+        </isif>
+        <img class="flexpay-payment-option <isif condition="${showOfferInTab}">flexpay-tab-fallback</isif>"
+             src="https://www.upgrade.com/img/flex-pay-logo-horizontal.svg"
+             height="32"
+             alt="${paymentOption.name}"
+             title="${paymentOption.name}" />
+    </a>
+</li>
+
+<iscomment>Include FlexPay Info Modal outside li element - will be moved to body by JS</iscomment>
+<isif condition="${showOfferInTab && !request.custom.flexpayModalIncluded}">
+    <isset name="flexpayModalIncluded" value="${true}" scope="request" />
+    <isinclude template="flexpay/flexpayInfoModal" />
+</isif>

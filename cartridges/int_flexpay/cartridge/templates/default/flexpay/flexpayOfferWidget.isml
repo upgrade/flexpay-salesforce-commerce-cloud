@@ -1,0 +1,36 @@
+<isscript>
+    var flexpayConfig = require('*/cartridge/scripts/flexpayConfig');
+</isscript>
+
+<isset name="offerEnabled" value="${flexpayConfig.isMarketingOfferEnabled()}" scope="page" />
+<isset name="minAmount" value="${flexpayConfig.getMarketingOfferMinAmount()}" scope="page" />
+
+<isif condition="${offerEnabled && offerAmount >= minAmount}">
+    <div class="flexpay-offer-widget ${offerCssClass}"
+         data-flexpay-offer
+         data-amount="${offerAmount}"
+         data-currency="${offerCurrency}"
+         data-context="${offerContext}"
+         data-offer-url="${dw.web.URLUtils.url('FlexpayOrder-GetOffer')}">
+
+        <div class="flexpay-offer-loading" style="display: none;">
+            <div class="flexpay-loading-content">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span class="flexpay-loading-text">Loading payment options...</span>
+            </div>
+        </div>
+
+        <div class="flexpay-offer-content" style="display: none;">
+            <!-- Content populated by JavaScript -->
+        </div>
+
+        <div class="flexpay-offer-error" style="display: none;">
+            <!-- Error state: widget remains hidden -->
+        </div>
+    </div>
+    <iscomment>Include modal for all non-payment-selector contexts (PDP and checkout summary need a working modal)</iscomment>
+    <isif condition="${offerContext !== 'payment-selector' && !request.custom.flexpayModalIncluded}">
+        <isset name="flexpayModalIncluded" value="${true}" scope="request" />
+        <isinclude template="flexpay/flexpayInfoModal" />
+    </isif>
+</isif>

@@ -1,0 +1,14 @@
+.vscode
+node_modules/
+coverage/
+dw*.json
+launch.json
+.DS_Store
+.idea
+# Integration test config with OCAPI credentials
+test/integration/config.json
+# compiled client side files
+cartridges/int_flexpay_sfra/cartridge/static/default/js/
+cartridges/int_flexpay_sfra/cartridge/static/default/css/
+cartridges/int_flexpay_sfra5/cartridge/static/default/js/
+cartridges/int_flexpay_sfra5/cartridge/static/default/css/

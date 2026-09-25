@@ -1,0 +1,7 @@
+cartridges/int_flexpay/cartridge/static/
+cartridges/int_flexpay_sfra/cartridge/static/
+cartridges/int_flexpay_sfra5/cartridge/static/
+coverage/
+doc/
+bin/
+codecept.conf.js

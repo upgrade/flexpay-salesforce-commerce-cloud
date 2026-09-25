@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<payment-settings xmlns="http://www.demandware.com/xml/impex/paymentsettings/2009-09-15">
+  
+    <payment-method method-id="FLEXPAY">
+        <name xml:lang="x-default">Flex Pay</name>
+        <image>logo-flexpay.png</image>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>FLEXPAY_PAYMENT</processor-id>
+    </payment-method>
+</payment-settings>

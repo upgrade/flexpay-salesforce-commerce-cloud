@@ -1,0 +1,15 @@
+<isscript>
+    var flexpayConfig = require('*/cartridge/scripts/flexpayConfig');
+    var currentBasket = require('dw/order/BasketMgr').getCurrentBasket();
+    var basketTotal = currentBasket && currentBasket.totalGrossPrice ? currentBasket.totalGrossPrice.value : 0;
+    var showFlexPay = dw.system.Site.getCurrent().getCustomPreferenceValue('flexPayEnabled')
+                   && basketTotal >= flexpayConfig.getMarketingOfferMinAmount();
+</isscript>
+<isloop items="${pdict.order.billing.payment.applicablePaymentMethods}" var="paymentOption">
+    <isif condition="${paymentOption.ID === 'FLEXPAY' && showFlexPay}">
+        <isinclude template="flexpay/flexPayMethodTab" />
+    </isif>
+    <isif condition="${paymentOption.ID === 'CREDIT_CARD'}">
+        <isinclude template="checkout/billing/paymentOptions/creditCardTab" />
+    </isif>
+</isloop>
